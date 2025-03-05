@@ -24,11 +24,12 @@ def is_prime_number(num):
     return is_prime
 
 def count_prime_numbers(num):
-    counter = 1
-    while counter <= num:
-        counter += 1
-        if is_prime_number(counter):
-            print(counter)
+    it = 2
+    prime_num = list()
+    while it <= num:
+        if is_prime_number(it):
+            prime_num.append(it)
+        it += 1
+    return prime_num
 
-
-print(count_prime_numbers(55))
+print(count_prime_numbers(100))
