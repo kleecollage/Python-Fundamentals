@@ -25,204 +25,130 @@
         ✓II. Remove category
     ✓- End Program
 """
-import os
 import shutil
 from pathlib import Path
 
-dir_path = os.getcwd()
-recipes_location = Path(dir_path) / "Recetas"
-guide = Path(recipes_location)
-sub_dirs = [dirs for dirs in recipes_location.iterdir() if dirs.is_dir()]
+dir_path = Path.cwd()
+recipes_location = dir_path / "Recetas"
+sub_dirs = [d for d in recipes_location.iterdir() if d.is_dir()]
 
-# Categories
+# Show Menu
+def show_menu():
+    options = {
+        1: "Read recipe",
+        2: "Create recipe",
+        3: "Create category",
+        4: "Delete recipe",
+        5: "Delete category",
+        6: "Exit",
+    }
+    print("\n..:: MENU OPTIONS ::..")
+    for key, value in options.items():
+        print(f"{key}: {value}")
+    return validate_option(ask_user(), options.keys())
+
+# Get Categories
 def get_category_recipe():
-    total_recipes = 0
+    total_recipes = sum(len(list(d.glob("*.txt"))) for d in sub_dirs)
     for sub_dir in sub_dirs:
-        recipes = list(sub_dir.glob("*.txt"))
-        recipes_category = len(recipes)
-        print(f"{sub_dir.name}: {recipes_category} recipes")
-        total_recipes += recipes_category
-    recipes = list(Path(guide).glob("**/*.txt"))
-    total_recipes = len(recipes)
+        print(f"{sub_dir.name}: {len(list(sub_dir.glob('*.txt')))} recipes")
     print("Total:", total_recipes)
 
-# User choice
-def ask_user_text():
-   return input(">>> ")
-
+# Numeric User choice
 def ask_user():
-    return int(input(">>> "))
+    while True:
+        try:
+            return int(input(">>> "))
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+# User Text Input
+def ask_user_text():
+   return input(">>> ").strip()
 
 # Validate option
 def validate_option(user_input, options):
-    while True:
-        if user_input in options:
-            return user_input
-        elif user_input not in options:
-            print("Sorry, that option is not valid. Please try again.")
-            user_input = ask_user()
+    while user_input not in options:
+        print("Sorry, that option is not valid. Please try again.")
+        user_input = ask_user()
+    return user_input
 
 # Show recipes
 def show_recipes(category):
     recipes = list(category.glob("*.txt"))
-    options = []
+    if not recipes:
+        print("No recipes found.")
+        return
+
     print("\n..:: Recipes ::..")
-    for j, recipe in enumerate(recipes, start=1):
-        options.append(j)
-        print(f"{j}: {recipe.stem}")
-    user_input = ask_user()
-    validate_recipe = validate_option(user_input, options)
-    selected_recipe = recipes[int(validate_recipe) - 1]
-    print(f"\nReading recipe:\n {selected_recipe.stem}")
-    with open(selected_recipe, "r") as file:
-        print(file.read())
-    show_menu()
+    for idx, recipe in enumerate(recipes, start=1):
+        print(f"{idx}: {recipe.stem}")
+
+    selected_recipe = recipes[validate_option(ask_user(), range(1, len(recipes) + 1)) - 1]
+    print(f"\nReading recipe: {selected_recipe.stem}\n")
+    print(selected_recipe.read_text())
 
 # Show categories
 def show_categories():
     print("Choose the category")
-    options = []
-    for i, sub_dir in enumerate(sub_dirs, start=1):
-        options.append(i)
-        print(f"{i}: {sub_dir.name}")
-    user_inputs = ask_user()
-    validate_category = validate_option(user_inputs, options)
-    selected_category = sub_dirs[int(validate_category) - 1]
-    return selected_category
+    for idx, sub_dir in enumerate(sub_dirs, start=1):
+        print(f"{idx}: {sub_dir.name}")
+    return sub_dirs[validate_option(ask_user(), range(1, len(sub_dirs) + 1)) - 1]
 
 # New recipe
 def create_recipe():
-    selected_category = show_categories()
     print("\n..:: Create a New Recipe ::..")
-    print("\nEnter the name of the new recipe:")
-    recipe_name = str(ask_user_text().strip())
-    print("\nEnter the content of the recipe (press Enter twice to finish):")
-    content = []
-    while True:
-        line = ask_user_text()
-        if line == "":
-            break
-        content.append(line)
-    recipe_path = guide / selected_category / f"{recipe_name}.txt"
-    try:
-        with open(recipe_path, "w") as file:
-            file.write("\n".join(content))
-        print(f"\nRecipe '{recipe_name}' created successfully in '{selected_category.name}'.")
-    except Exception as e:
-        print(f"Error creating the recipe: {e}")
-    show_menu()
+    category = show_categories()
+    print("Enter the name of the new recipe")
+    recipe_name = ask_user_text()
+    print("Enter recipe content (press Enter twice to finish):")
+    content = "\n".join(iter(ask_user_text, ""))
+    recipe_path = category / f"{recipe_name}.txt"
+    recipe_path.write_text(content)
+    print(f"Recipe '{recipe_name}' created successfully in '{category.name}'.")
 
 # New Category
 def create_category():
     print("\n..:: Create a New Category ::..")
     print("\nEnter the name of the new category:")
-    category_name = str(ask_user_text().strip())
-    new_category_path = guide / category_name
-    if new_category_path.exists():
-        print(f"A category with the name '{category_name}' already exists.")
-        return
-    try:
-        new_category_path.mkdir()
-        print(f"\nCategory '{category_name}' created successfully.")
-    except Exception as e:
-        print(f"Error creating the category: {e}")
-    show_menu()
+    category_name = ask_user_text()
+    category_path = recipes_location / category_name
+    if category_path.exists():
+        print(f"Category '{category_name}' already exists.")
+    else:
+        category_path.mkdir()
+        print(f"Category '{category_name}' created successfully.")
 
 # Delete Recipe
 def delete_recipe(category):
-    recipes = list(category.glob("*.txt"))
-    options = []
     print("\n..:: Recipes ::..")
-    for j, recipe in enumerate(recipes, start=1):
-        options.append(j)
-        print(f"{j}: {recipe.stem}")
-    user_input = ask_user()
-    validate_recipe = validate_option(user_input, options)
-    selected_recipe = recipes[int(validate_recipe) - 1]
-    try:
-        selected_recipe.unlink()
-        print(f"\nRecipe '{selected_recipe.stem}' deleted successfully.")
-    except Exception as e:
-        print(f"Error deleting the recipe: {e}")
-    show_menu()
+    recipes = list(category.glob("*.txt"))
+    if not recipes:
+        print("No recipes found.")
+        return
+
+    for idx, recipe in enumerate(recipes, start=1):
+        print(f"{idx}: {recipe.stem}")
+
+    selected_recipe = recipes[validate_option(ask_user(), range(1, len(recipes) + 1)) - 1]
+    selected_recipe.unlink()
+    print(f"Recipe '{selected_recipe.stem}' deleted successfully.")
 
 # Delete Category
 def delete_category(category):
-    try:
-        if category.is_dir():
-            shutil.rmtree(category)
-            print(f"\nCategory '{category.name}' deleted successfully.")
-        else:
-            print(f"'{category.name}' is not a valid directory.")
-    except Exception as e:
-        print(f"Error deleting the category: {e}")
-    show_menu()
-
-# Show Menu
-def show_menu():
-    print("\n..:: MENU OPTIONS ::..")
-    print("""Select one of the options:
-    1. Read recipe
-    2. Create recipe
-    3. Create category
-    4. Delete recipe
-    5. Delete category
-    6. Exit""")
-    user_input = ask_user()
-    validate_input = validate_option(user_input, [1, 2, 3, 4, 5, 6])
-    return validate_input
+    shutil.rmtree(category)
+    print(f"Category '{category.name}' deleted successfully.")
 
 # START PROGRAM
 print("Recipes Located at:", recipes_location)
 print(" ####################   WELCOME TO KLEE RECIPES   #################### \n")
 print("..:: Categories ::..")
 get_category_recipe()
-validate_input = show_menu()
-while validate_input != 6:
-    match validate_input:
-        case 1:
-            category = show_categories()
-            show_recipes(category)
-        case 2:
-            create_recipe()
-        case 3:
-            create_category()
-        case 4:
-            category = show_categories()
-            delete_recipe(category)
-        case 5:
-            category = show_categories()
-            delete_category(category)
-        case 6:
-            print("Bye")
-            exit(0)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+while (option := show_menu()) != 6:
+    match option:
+        case 1: show_recipes(show_categories())
+        case 2: create_recipe()
+        case 3: create_category()
+        case 4: delete_recipe(show_categories())
+        case 5: delete_category(show_categories())
+    print("Bye")
