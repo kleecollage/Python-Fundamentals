@@ -35,7 +35,6 @@ def deco_hi(function):
 @deco_hi
 def to_upper2(text):
     print(text.upper())
-
 @deco_hi
 def to_lower2(text):
     print(text.lower())
