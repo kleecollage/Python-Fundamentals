@@ -10,6 +10,7 @@ from Day8.numbers.generators import gen_pharma, gen_perf, gen_cos
 #   -- You turn is
 #   -- {TURN}
 #   -- Please wait, you will be attended soon
+# ACTIONS:
 # menu_function() -> ask user to select one of the areas
 # selected_area_function() -> returns the next turn
 # continue_function() -> asks user if wants to generate another turn
@@ -31,18 +32,12 @@ def menu():
     return area_selected
 
 def another_turn():
-    options = {
-        1:"Yes",
-        2:"No",
-    }
-    print("Would you like to take another turn?")
-    for op, value in options.items():
-        print(op, value)
-    op_select = int(input("Select an option:  "))
-    while op_select not in options.keys():
+    options = input("\nWould you like to take another turn? [Y] / [N]:   ")
+    options = options.upper()
+    if options != "Y" and options != "N":
         print("Please select a valid option")
-        op_select = int(input("Select an option:  "))
-    if op_select == 2:
+        another_turn()
+    elif options == "N":
         exit()
     run_program()
 
