@@ -30,5 +30,5 @@ sleep = datetime(2022, 10, 5, 23, 45)
 vigil = sleep - wake
 print(vigil.seconds)
 
-minutes = 
+minutes = datetime.now().minute
 print(minutes)
