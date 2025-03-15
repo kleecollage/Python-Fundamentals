@@ -13,7 +13,7 @@ import send2trash
 # LIST FILES FROM A DIRECTORY
 # print(os.listdir())
 
-# MOVE FILES
+# MOVE / RENAME FILES
 # shutil.move('course.txt', 'course2.txt')
 
 # REMOVE FILE
