@@ -1,6 +1,7 @@
 import math
 import shutil, os, re, datetime
 import time
+from pathlib import Path
 
 # shutil.unpack_archive('Proyecto+Dia+9.zip', 'ProjectD9', 'zip')
 # print(os.listdir('ProjectD9'))
@@ -15,7 +16,8 @@ files_dic = {}
 def get_content():
     for directory, subdir, files in os.walk(path):
         for file in files:
-            found = open(f'{directory}/{file}', 'r')
+            file_path = Path(directory, file)
+            found = open(file_path , 'r')
             content = found.read()
             has_series(file, content)
             found.close()
@@ -28,8 +30,9 @@ def has_series(file, content):
         files_dic[file] = serial
 
 def print_results():
+    date = datetime.date.today()
     print('-'*35)
-    print('Search Date:', format_date())
+    print(f'Search Date: {date.day}/{date.month}/{date.year}')
     print('\n FILE \t\t\t\t SERIAL NO.')
     print('-'*16 + '\t' + '-'*16)
     for file, serial in files_dic.items():
