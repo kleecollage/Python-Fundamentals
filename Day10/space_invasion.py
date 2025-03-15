@@ -16,7 +16,7 @@ pygame.init()
 
 # CREATE WINDOW
 screen = pygame.display.set_mode((800, 600))
-game_font = font_bytes("freesansbold.ttf")
+game_font = font_bytes("Game_Of_Squids.ttf")
 
 # TITLE AND ICON
 pygame.display.set_caption("Space Invasion")
@@ -31,7 +31,7 @@ mixer.music.play(-1)
 
 # MISSILE VARIABLES
 missiles = []
-img_missile = pygame.image.load("missile_1.png")
+img_missile = pygame.image.load("missile_2.png")
 missile_x = 0
 missile_y = 500
 missile_y_change = 2
@@ -51,7 +51,7 @@ enemy_x_change = []
 enemy_y_change = []
 enemy_number = 8
 for enemy in range(enemy_number):
-    img_enemy.append(pygame.image.load("ufo_5.png"))
+    img_enemy.append(pygame.image.load("ufo_1.png"))
     enemy_x.append(random.randint(0, 736))
     enemy_y.append(random.randint(50, 200))
     enemy_x_change.append(2)
@@ -164,8 +164,9 @@ while on_execution:
                 collision_sound = mixer.Sound('collision_1.mp3')
                 collision_sound.set_volume(0.8)
                 collision_sound.play()
-                missile_y = 475
-                missile_visible = False
+                missiles.remove(missil)
+                # missile_y = 475
+                # missile_visible = False
                 score += 1
                 enemy_x[e] = random.randint(0, 736)
                 enemy_y[e] = random.randint(50, 200)
