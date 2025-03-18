@@ -11,6 +11,12 @@
 
 <h1>Tasks List {{ city }}</h1>
 <a href="{% url 'create' %}">Add New Task</a>
+
+<form method="get">
+    <input type="Text" name="search-area" value="{{ query }}" />
+    <input type="submit" value="Search" />
+</form>
+
 <table>
     <thead>
     <tr>

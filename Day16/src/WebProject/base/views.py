@@ -38,7 +38,6 @@ class RegisterPage(FormView):
             return redirect('tasks')
         return super(RegisterPage, self).get(*args, **kwargs)
 
-
 class ListTasks(LoginRequiredMixin, ListView):
     model = Task
     context_object_name = 'Tasks'
@@ -47,6 +46,11 @@ class ListTasks(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwarg)
         context['Tasks'] = context['Tasks'].filter(user=self.request.user)
         context['count'] = context['Tasks'].filter(completed=False).count()
+
+        query = self.request.GET.get('search-area') or ''
+        if query:
+            context['Tasks'] = context['Tasks'].filter(title__icontains=query)
+        context['query'] = query
         return context
 
 class DetailTask(LoginRequiredMixin, DetailView):
