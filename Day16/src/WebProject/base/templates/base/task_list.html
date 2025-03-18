@@ -6,16 +6,19 @@
 </head>
 <body>
     <h1>Tasks List</h1>
+    <a href="{% url 'create' %}">Add New Task</a>
     <table>
         <thead>
         <tr>
             <th>Task</th>
+            <th></th>
         </tr>
         </thead>
         {% for task in Tasks %}
             <tbody>
             <tr>
                 <td>{{ task.title }}</td>
+                <td><a href="{% url 'details' task.id %}">See</a></td>
             </tr>
             </tbody>
             {% empty %}
