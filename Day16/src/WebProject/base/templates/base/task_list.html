@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tasks</title>
+</head>
+<body>
+    <h1>Tasks List</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Task</th>
+        </tr>
+        </thead>
+        {% for task in Tasks %}
+            <tbody>
+            <tr>
+                <td>{{ task.title }}</td>
+            </tr>
+            </tbody>
+            {% empty %}
+            <p>No tasks yet.</p>
+        {% endfor %}
+    </table>
+</body>
+</html>
