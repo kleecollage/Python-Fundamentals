@@ -1,31 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Tasks</title>
-</head>
-<body>
-    <h1>Tasks List</h1>
-    <a href="{% url 'create' %}">Add New Task</a>
-    <table>
-        <thead>
+{% if request.user.is_authenticated %}
+    <p>{{ request.user }}</p>
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Logout"/>
+    </form>
+{% else %}
+    <a href="{% url 'login' %}">Login</a>
+{% endif %}
+<hr />
+
+<h1>Tasks List</h1>
+<a href="{% url 'create' %}">Add New Task</a>
+<table>
+    <thead>
+    <tr>
+        <th>Task</th>
+        <th></th>
+    </tr>
+    </thead>
+    {% for task in Tasks %}
+        <tbody>
         <tr>
-            <th>Task</th>
-            <th></th>
+            <td>{{ task.title }}</td>
+            <td><a href="{% url 'details' task.id %}">See</a></td>
+            <td><a href="{% url 'update' task.id %}">Edit</a></td>
+            <td><a href="{% url 'delete' task.id %}">Delete</a></td>
         </tr>
-        </thead>
-        {% for task in Tasks %}
-            <tbody>
-            <tr>
-                <td>{{ task.title }}</td>
-                <td><a href="{% url 'details' task.id %}">See</a></td>
-                <td><a href="{% url 'update' task.id %}">Edit</a></td>
-                <td><a href="{% url 'delete' task.id %}">Delete</a></td>
-            </tr>
-            </tbody>
-            {% empty %}
-            <p>No tasks yet.</p>
-        {% endfor %}
-    </table>
-</body>
-</html>
+        </tbody>
+        {% empty %}
+        <p>No tasks yet.</p>
+    {% endfor %}
+</table>
