@@ -19,6 +19,8 @@
             <tr>
                 <td>{{ task.title }}</td>
                 <td><a href="{% url 'details' task.id %}">See</a></td>
+                <td><a href="{% url 'update' task.id %}">Edit</a></td>
+                <td><a href="{% url 'delete' task.id %}">Delete</a></td>
             </tr>
             </tbody>
             {% empty %}
