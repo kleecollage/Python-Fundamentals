@@ -1,39 +1,42 @@
-{% if request.user.is_authenticated %}
-    <p>{{ request.user }}</p>
-    <form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <input type="submit" value="Logout"/>
+{% extends 'base/main.html' %}
+{%  block content %}
+    {% if request.user.is_authenticated %}
+        <p>{{ request.user }}</p>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Logout"/>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}">Login</a>
+    {% endif %}
+    <hr />
+
+    <h1>Tasks List {{ city }}</h1>
+    <a href="{% url 'create' %}">Add New Task</a>
+
+    <form method="get">
+        <input type="Text" name="search-area" value="{{ query }}" />
+        <input type="submit" value="Search" />
     </form>
-{% else %}
-    <a href="{% url 'login' %}">Login</a>
-{% endif %}
-<hr />
 
-<h1>Tasks List {{ city }}</h1>
-<a href="{% url 'create' %}">Add New Task</a>
-
-<form method="get">
-    <input type="Text" name="search-area" value="{{ query }}" />
-    <input type="submit" value="Search" />
-</form>
-
-<table>
-    <thead>
-    <tr>
-        <th>Task</th>
-        <th></th>
-    </tr>
-    </thead>
-    {% for task in Tasks %}
-        <tbody>
+    <table>
+        <thead>
         <tr>
-            <td>{{ task.title }}</td>
-            <td><a href="{% url 'details' task.id %}">See</a></td>
-            <td><a href="{% url 'update' task.id %}">Edit</a></td>
-            <td><a href="{% url 'delete' task.id %}">Delete</a></td>
+            <th>Task</th>
+            <th></th>
         </tr>
-        </tbody>
-        {% empty %}
-        <p>No tasks yet.</p>
-    {% endfor %}
-</table>
+        </thead>
+        {% for task in Tasks %}
+            <tbody>
+            <tr>
+                <td>{{ task.title }}</td>
+    {#            <td><a href="{% url 'details' task.id %}">See</a></td> #}
+                <td><a href="{% url 'update' task.id %}">See</a></td>
+                <td><a href="{% url 'delete' task.id %}">Delete</a></td>
+            </tr>
+            </tbody>
+            {% empty %}
+            <p>No tasks yet.</p>
+        {% endfor %}
+    </table>
+{% endblock content %}

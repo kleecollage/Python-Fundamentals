@@ -1,6 +1,9 @@
-<a href="{% url 'tasks' %}">Cancel</a>
-<form method="POST">
-    {% csrf_token %}
-    <p>Are you sure you want to delete "{{ Task }}"?</p>
-    <input type="submit" value="Delete" />
-</form>
+{% extends 'base/main.html' %}
+{%  block content %}
+    <a href="{% url 'tasks' %}">Cancel</a>
+    <form method="POST">
+        {% csrf_token %}
+        <p>Are you sure you want to delete "{{ Task }}"?</p>
+        <input type="submit" value="Delete" />
+    </form>
+{% endblock content %}
