@@ -1,10 +1,13 @@
 {% extends 'base/main.html' %}
 {%  block content %}
-    <h1>Tasks Form</h1>
-    <a href="{% url 'tasks' %}">Go Back</a>
-    <form method="POST" action="">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit" />
-    </form>
+    <div class="top-bar">
+        <a href="{% url 'tasks' %}">&#x23F4; Go Back</a>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input class="button" type="submit" value="Submit" />
+        </form>
+    </div>
 {% endblock content %}
